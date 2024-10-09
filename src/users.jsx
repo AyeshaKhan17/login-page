@@ -1,20 +1,105 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
+import { Button } from './components/ui/button';
+import { Pagination, PaginationItem } from './components/ui/pagination';
+
 
 const Users = () => {
-    const location = useLocation();
-    const user = location.state?.user;
+    const [users, setUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const usersPerPage = 5;
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch(`https://dummyjson.com/users?limit=${usersPerPage}&skip=${(currentPage - 1) * usersPerPage}`);
+                const data = await response.json();
+                setUsers(data.users);
+                setTotalUsers(data.limit);
+            } catch (error) {
+                console.error('Cannot fetch:', error);
+            }
+        };
+
+        fetchUsers();
+    }, [currentPage]);
+
+
+    const handleUserClick = (id) => {
+        navigate(`/users/${id}`);
+    };
+
+    const totalPages = Math.ceil(totalUsers / usersPerPage);
 
     return (
-        <div className="user-details text-center mt-20">
-            {user ? (
-                <div>
-                    <h1 className='text-lg font-sans font-medium'>User Details</h1>
-                    <p>Name: {user.name}</p>
-                    <p>Email: {user.email}</p>
+        <div className="containerm-0 p-10 bg-slate-100">
+            <h1 className="text-4xl font-bold text-center mb-6 mt-6 font-mono tracking-wide text-gray-700">Users</h1>
+
+            {users.length > 0 ? (
+                <div className="flex flex-col gap-4">
+                    {users.map((user) => (
+                        <Card key={user.id} className="shadow-md hover:bg-slate-300 transition">
+                            <CardHeader>
+                                <CardTitle className='font-mono tracking-wide text-gray-700 text-xl mb-0 pl-8'>{user.firstName} {user.lastName}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex gap-20 pl-10">
+
+                                <img src={user.image} alt="user image" className='mt-0 mb-3 h-23 w-30'></img>
+                                <div>
+                                    <p>ID: {user.id}</p>
+                                    <p>Email: {user.email}</p>
+                                    <p>Age: {user.age}</p>
+                                    <p>Phone: {user.phone}</p>
+                                    <p>Gender: {user.gender}</p>
+                                    <p>Date of Birth: {user.birthDate}</p>
+
+
+                                    <Button variant="outline" className="mt-2 ml" onClick={() => handleUserClick(user.id)}>
+                                        View Details
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+
+
+                    <div className="flex justify-center mt-4">
+                        <Pagination>
+                            <PaginationItem
+                                disabled={currentPage === 1}
+                                onClick={() => setCurrentPage(currentPage - 1)}>
+                                Previous
+                            </PaginationItem>
+
+
+                            {[...Array(totalPages)].map((_, index) => (
+                                <PaginationItem
+                                    key={index}
+                                    active={currentPage === index + 1}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                >
+                                    {index + 1}
+                                </PaginationItem>
+                            ))}
+
+                            <PaginationItem
+                                disabled={currentPage === totalPages}
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                            >
+                                Next
+                            </PaginationItem>
+                        </Pagination>
+                    </div>
+
+
+
                 </div>
             ) : (
-                <p>No user data available.</p>
+                <p>Testing your patience....</p>
             )}
         </div>
     );
