@@ -7,10 +7,10 @@ import { Pagination, PaginationItem } from './components/ui/pagination';
 
 const Users = () => {
     const [users, setUsers] = useState([]);
-    const [filteredUsers, setFilteredUsers] = useState([]); // To store filtered users
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
-    const [searchTerm, setSearchTerm] = useState(''); // Search term for filtering users
+    const [searchTerm, setSearchTerm] = useState('');
     const usersPerPage = 5;
     const navigate = useNavigate();
 
@@ -30,13 +30,15 @@ const Users = () => {
         fetchUsers();
     }, []);
 
-    // Handle search input and filtering
+
+
+
     useEffect(() => {
         const searchResults = users.filter((user) =>
             (`${user.firstName} ${user.maidenName} ${user.lastName}`).toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredUsers(searchResults);
-        setCurrentPage(1); // Reset to the first page when searching
+        setCurrentPage(1);
     }, [searchTerm, users]);
 
     const handleUserClick = (id) => {
@@ -57,7 +59,7 @@ const Users = () => {
         return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
     };
 
-    // Get users for the current page
+
     const currentUsers = filteredUsers.slice(
         (currentPage - 1) * usersPerPage,
         currentPage * usersPerPage
@@ -67,7 +69,7 @@ const Users = () => {
         <div className="container mx-auto p-10 bg-slate-100">
             <h1 className="text-4xl font-bold text-center mb-6 mt-6 font-mono tracking-wide text-gray-700">Users</h1>
 
-            {/* Search Bar */}
+
             <div className="flex justify-center mb-6">
                 <input
                     type="text"
@@ -77,6 +79,7 @@ const Users = () => {
                     className="p-2 border border-gray-300 rounded-md w-80"
                 />
             </div>
+
 
             {currentUsers.length > 0 ? (
                 <div className="flex flex-col gap-4">
@@ -105,7 +108,8 @@ const Users = () => {
                         </Card>
                     ))}
 
-                    {/* Pagination Section */}
+
+
                     <div className="flex justify-center mt-4">
                         <Pagination className="flex items-center space-x-2">
                             <PaginationItem
