@@ -13,7 +13,7 @@ const LoginPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const demoApiUrl = 'https://run.mocky.io/v3/ff2f65bc-6f36-4945-bfe8-862d408edbe3';
+        const demoApiUrl = 'https://run.mocky.io/v3/d43061f8-5c67-48e1-8ab2-68c6683bd243';
 
         const requestBody = {
             email: email,
