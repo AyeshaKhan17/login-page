@@ -17,10 +17,10 @@ const Users = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch(`https://dummyjson.com/users?limit=100`);
+                const response = await fetch(`https://dummyjson.com/users?limit=100`); // Fetch more users initially
                 const data = await response.json();
                 setUsers(data.users);
-                setFilteredUsers(data.users);
+                setFilteredUsers(data.users); // Set both users and filteredUsers to the fetched data
                 setTotalUsers(data.total);
             } catch (error) {
                 console.error('Cannot fetch:', error);
