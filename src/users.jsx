@@ -33,13 +33,13 @@ const Users = () => {
 
 
 
-    useEffect(() => {
+    const handleSearch = () => {
         const searchResults = users.filter((user) =>
             (`${user.firstName} ${user.maidenName} ${user.lastName}`).toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredUsers(searchResults);
         setCurrentPage(1);
-    }, [searchTerm, users]);
+    };
 
     const handleUserClick = (id) => {
         navigate(`/users/${id}`);
@@ -78,7 +78,14 @@ const Users = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="p-2 border border-gray-300 rounded-md w-80"
                 />
+                <Button
+                    onClick={handleSearch}
+                    className="ml-7"
+                >
+                    Search
+                </Button>
             </div>
+
 
 
             {currentUsers.length > 0 ? (
