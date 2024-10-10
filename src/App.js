@@ -10,7 +10,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UserDetail />} /> {/* User detail route */}
+        <Route path="/users/:id" element={<UserDetail />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
   );

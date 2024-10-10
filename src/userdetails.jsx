@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+
+    DropdownMenuTrigger,
+} from "./components/ui/dropdown-menu";
+import { Link } from 'react-router-dom';
+import { HiMenu } from "react-icons/hi";
+
+
 
 const UserDetail = () => {
     const { id } = useParams();
@@ -21,30 +32,61 @@ const UserDetail = () => {
     }, [id]);
 
     return (
-        <div className="container mx-auto p-4">
-            {user ? (
-                <Card className="shadow-md">
-                    <CardHeader>
-                        <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="leading-loose">
-                        <p>Email:  {user.email}</p>
-                        <p>Age:  {user.age}</p>
-                        <p>Phone:  {user.phone}</p>
-                        <p>Gender:  {user.gender}</p>
-                        <p>Address:  {user.address.city}, {user.address.address}, {user.address.city} </p>
-                        <p>State: {user.address.state}, {user.address.stateCode}</p>
-                        <p>Postal Code : {user.address.postalCode} </p>
-                        <p>University:  {user.university}</p>
-                        <p>Company:  {user.company.name}</p>
-                        <p>Department:  {user.company.department}</p>
-                        <p>Title:  {user.company.title}</p>
-                        <p>Company Address:  {user.company.address.address}, {user.company.address.city}, {user.company.address.state}</p>
-                    </CardContent >
-                </Card >
-            ) : (
-                <p className=" text-center font-sans mt-60 text-xl">Testing your patience....</p>
-            )}
+
+        <div className="container  p-4">
+
+
+            <div className='m-0 p-7 bg-slate-200 flex justify-end pr-20 rounded-md'>
+
+
+
+                <DropdownMenu >
+                    <DropdownMenuTrigger className='flex p-5 text-xl'><HiMenu className='h-7 w-7' />  Menu</DropdownMenuTrigger>
+                    <DropdownMenuContent>
+
+
+                        <DropdownMenuItem asChild>
+                            <Link to="/users">User List</Link>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem asChild>
+                            <Link to="/login">Back to Login</Link>
+                        </DropdownMenuItem>
+
+
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
+
+
+
+
+            {
+                user ? (
+                    <Card className="shadow-md">
+                        <CardHeader>
+                            <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="leading-loose">
+                            <p>Email:  {user.email}</p>
+                            <p>Age:  {user.age}</p>
+                            <p>Phone:  {user.phone}</p>
+                            <p>Gender:  {user.gender}</p>
+                            <p>Address:  {user.address.city}, {user.address.address}, {user.address.city} </p>
+                            <p>State: {user.address.state}, {user.address.stateCode}</p>
+                            <p>Postal Code : {user.address.postalCode} </p>
+                            <p>University:  {user.university}</p>
+                            <p>Company:  {user.company.name}</p>
+                            <p>Department:  {user.company.department}</p>
+                            <p>Title:  {user.company.title}</p>
+                            <p>Company Address:  {user.company.address.address}, {user.company.address.city}, {user.company.address.state}</p>
+                        </CardContent >
+                    </Card >
+                ) : (
+                    <p className=" text-center font-sans mt-60 text-xl">Testing your patience....</p>
+                )
+            }
         </div >
     );
 };
