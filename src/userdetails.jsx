@@ -81,7 +81,7 @@ const UserDetail = () => {
                                     <p><strong>Age:  </strong>{user.age}</p>
                                     <p><strong>Phone:  </strong>{user.phone}</p>
                                     <p><strong>Gender:  </strong>{user.gender}</p>
-                                    <p><strong>Address:  </strong>{user.address.city}, {user.address.address}, {user.address.city} </p>
+                                    <p><strong>Address:  </strong>{user.address.address}, {user.address.city}, {user.address.state}, {user.address.country}</p>
                                     <p><strong>State: </strong>{user.address.state}, {user.address.stateCode}</p>
                                     <p><strong>Postal Code : </strong>{user.address.postalCode} </p>
                                     <p><strong>University:  </strong>{user.university}</p>

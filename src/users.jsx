@@ -7,15 +7,6 @@ import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/ui/table';
 import { TbSortAscending } from "react-icons/tb";
 import { TbSortDescending } from "react-icons/tb";
-import { HiOutlineTrash } from "react-icons/hi";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "./components/ui/dropdown-menu";
 import {
     Sheet,
     SheetContent,
@@ -24,7 +15,13 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "./components/ui/sheet";
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "./components/ui/select";
 
 
 
@@ -37,6 +34,7 @@ const Users = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [sorting, setSorting] = useState([]);
+    const [selectedStates, setSelectedState] = useState('');
     const usersPerPage = 10;
     const navigate = useNavigate();
 
@@ -60,6 +58,7 @@ const Users = () => {
     }, []);
 
 
+
     const handleSearch = () => {
         if (!searchTerm.trim()) {
             setFilteredUsers(users);
@@ -71,6 +70,8 @@ const Users = () => {
         setFilteredUsers(searchResults);
         setCurrentPage(1);
     };
+
+
 
 
     const handleUserClick = (id) => {
@@ -181,22 +182,40 @@ const Users = () => {
                     Search
                 </Button>
 
-                <DropdownMenu>
-                    <DropdownMenuTrigger className='bg'>Filter</DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Billing</DropdownMenuItem>
-                        <DropdownMenuItem>Team</DropdownMenuItem>
-                        <DropdownMenuItem>Subscription</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <Sheet>
+                    <SheetTrigger className="bg-slate-900 p-2 h-9 text-center text-white rounded-lg py-2 font-medium font-sans ">Filter</SheetTrigger>
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle>Add Filters</SheetTitle>
+                            <hr />
+                            <SheetDescription>
+
+
+                                <Select >
+                                    <SelectTrigger className="w-[335px] mt-5">
+                                        <SelectValue placeholder="Filter by State" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem></SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+
+                                <Button
+
+                                    className=" sm:mt-0 sm:ml-4 w-full sm:w-auto mt-5"
+                                >
+                                    Apply Fiters
+                                </Button>
+
+                            </SheetDescription>
+                        </SheetHeader>
+                    </SheetContent>
+                </Sheet>
+
+
 
             </div>
-
-
-
 
 
 
