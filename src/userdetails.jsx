@@ -10,6 +10,7 @@ import {
 } from "./components/ui/dropdown-menu";
 import { Link } from 'react-router-dom';
 import { HiMenu } from "react-icons/hi";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
 
 
@@ -36,12 +37,12 @@ const UserDetail = () => {
         <div className="container  p-4">
 
 
-            <div className='m-0 p-7 bg-slate-200 flex justify-end pr-20 rounded-md'>
+            <div className='m-0 p-7 pt-3 bg-slate-200 flex justify-end pr-20 rounded-md h-20'>
 
 
 
                 <DropdownMenu >
-                    <DropdownMenuTrigger className='flex p-5 text-xl'><HiMenu className='h-7 w-7' />  Menu</DropdownMenuTrigger>
+                    <DropdownMenuTrigger className='flex p-5 gap-2 text-xl'><HiMenu className='h-7 w-7' />  Menu</DropdownMenuTrigger>
                     <DropdownMenuContent>
 
 
@@ -50,7 +51,7 @@ const UserDetail = () => {
                         </DropdownMenuItem>
 
                         <DropdownMenuItem asChild>
-                            <Link to="/login">Back to Login</Link>
+                            <Link to="/login">Logout</Link>
                         </DropdownMenuItem>
 
 
@@ -60,33 +61,93 @@ const UserDetail = () => {
 
 
 
+            <Tabs defaultValue="details" className="w-full mt-1">
+                <TabsList>
+                    <TabsTrigger value="details">General Details</TabsTrigger>
+                    <TabsTrigger value="bank">Bank Details</TabsTrigger>
+                    <TabsTrigger value="company">Company Details</TabsTrigger>
+                </TabsList>
+                <TabsContent value="details">
 
 
-            {
-                user ? (
-                    <Card className="shadow-md">
-                        <CardHeader>
-                            <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="leading-loose">
-                            <p>Email:  {user.email}</p>
-                            <p>Age:  {user.age}</p>
-                            <p>Phone:  {user.phone}</p>
-                            <p>Gender:  {user.gender}</p>
-                            <p>Address:  {user.address.city}, {user.address.address}, {user.address.city} </p>
-                            <p>State: {user.address.state}, {user.address.stateCode}</p>
-                            <p>Postal Code : {user.address.postalCode} </p>
-                            <p>University:  {user.university}</p>
-                            <p>Company:  {user.company.name}</p>
-                            <p>Department:  {user.company.department}</p>
-                            <p>Title:  {user.company.title}</p>
-                            <p>Company Address:  {user.company.address.address}, {user.company.address.city}, {user.company.address.state}</p>
-                        </CardContent >
-                    </Card >
-                ) : (
-                    <p className=" text-center font-sans mt-60 text-xl">Testing your patience....</p>
-                )
-            }
+                    {
+                        user ? (
+                            <Card className="shadow-md w-auto">
+                                <CardHeader>
+                                    <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
+                                </CardHeader>
+                                <CardContent className="leading-loose ">
+                                    <p><strong>Email: </strong> {user.email}</p>
+                                    <p><strong>Age:  </strong>{user.age}</p>
+                                    <p><strong>Phone:  </strong>{user.phone}</p>
+                                    <p><strong>Gender:  </strong>{user.gender}</p>
+                                    <p><strong>Address:  </strong>{user.address.city}, {user.address.address}, {user.address.city} </p>
+                                    <p><strong>State: </strong>{user.address.state}, {user.address.stateCode}</p>
+                                    <p><strong>Postal Code : </strong>{user.address.postalCode} </p>
+                                    <p><strong>University:  </strong>{user.university}</p>
+
+                                </CardContent >
+                            </Card >
+                        ) : (
+                            <p className=" text-center font-sans mt-60 text-xl">Testing your patience....</p>
+                        )
+                    }
+
+
+
+                </TabsContent>
+                <TabsContent value="bank">
+
+                    {
+                        user ? (
+                            <Card className="shadow-md w-auto">
+                                <CardHeader>
+                                    <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="leading-loose ">
+                                    <p><strong>Card Expire: </strong> {user.bank.cardExpire}</p>
+                                    <p><strong>Card Number:  </strong>{user.bank.cardNumber}</p>
+                                    <p><strong>Card Type:  </strong>{user.bank.cardType}</p>
+                                    <p><strong>Currency:  </strong>{user.bank.currency}</p>
+                                    <p><strong>iban:  </strong>{user.bank.iban}</p>
+
+                                </CardContent >
+                            </Card >
+                        ) : (
+                            <p className=" text-center font-sans mt-60 text-xl">Testing your patience....</p>
+                        )
+                    }
+                </TabsContent>
+
+                <TabsContent value="company">
+                    {
+                        user ? (
+                            <Card className="shadow-md w-auto">
+                                <CardHeader>
+                                    <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="leading-loose ">
+                                    <p><strong>Company:  </strong>{user.company.name}</p>
+                                    <p><strong>Department:  </strong>{user.company.department}</p>
+                                    <p><strong>Title:  </strong>{user.company.title}</p>
+                                    <p><strong>Company Address:  </strong>{user.company.address.address}, {user.company.address.city}, {user.company.address.state}, {user.company.address.country}</p>
+                                </CardContent >
+                            </Card >
+                        ) : (
+                            <p className=" text-center font-sans mt-60 text-xl">Testing your patience....</p>
+                        )
+                    }
+
+                </TabsContent>
+            </Tabs>
+
+
+
+
+
+
         </div >
     );
 };

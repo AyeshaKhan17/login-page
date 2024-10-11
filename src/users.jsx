@@ -7,6 +7,27 @@ import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/ui/table';
 import { TbSortAscending } from "react-icons/tb";
 import { TbSortDescending } from "react-icons/tb";
+import { HiOutlineTrash } from "react-icons/hi";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "./components/ui/dropdown-menu";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "./components/ui/sheet";
+
+
+
+
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -57,6 +78,7 @@ const Users = () => {
     };
 
 
+
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
     const getVisiblePageNumbers = () => {
@@ -79,8 +101,6 @@ const Users = () => {
         ),
         [filteredUsers, currentPage, usersPerPage]
     );
-
-
 
 
 
@@ -115,9 +135,12 @@ const Users = () => {
             {
                 header: 'Actions',
                 cell: ({ row }) => (
+
                     <Button variant="outline" onClick={() => handleUserClick(row.original.id)}>
                         View Details
                     </Button>
+
+
                 ),
             },
         ],
@@ -143,7 +166,7 @@ const Users = () => {
             <h1 className="text-4xl font-bold text-center mb-6 mt-4 font-mono tracking-wide text-gray-700">Users</h1>
 
 
-            <div className="flex flex-col sm:flex-row justify-center items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-center items-center mb-6 gap-5">
                 <input
                     type="text"
                     placeholder="Search users by name..."
@@ -157,7 +180,23 @@ const Users = () => {
                 >
                     Search
                 </Button>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger className='bg'>Filter</DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Profile</DropdownMenuItem>
+                        <DropdownMenuItem>Billing</DropdownMenuItem>
+                        <DropdownMenuItem>Team</DropdownMenuItem>
+                        <DropdownMenuItem>Subscription</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
             </div>
+
+
+
 
 
 
