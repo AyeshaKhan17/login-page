@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './components/ui/button';
@@ -22,8 +23,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "./components/ui/select";
-
-
+import { GrFilter } from "react-icons/gr";
 
 
 const Users = () => {
@@ -32,9 +32,9 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedState, setSelectedState] = useState(''); // State filter
     const [isLoading, setIsLoading] = useState(true);
     const [sorting, setSorting] = useState([]);
-    const [selectedStates, setSelectedState] = useState('');
     const usersPerPage = 10;
     const navigate = useNavigate();
 
@@ -59,6 +59,14 @@ const Users = () => {
 
 
 
+
+
+    const uniqueStates = useMemo(() => {
+        const states = users.map(user => user.address.state);
+        return [...new Set(states)];
+    }, [users]);
+
+
     const handleSearch = () => {
         if (!searchTerm.trim()) {
             setFilteredUsers(users);
@@ -72,17 +80,30 @@ const Users = () => {
     };
 
 
+    const applyStateFilter = () => {
+        const filtered = selectedState ? users.filter(user => user.address.state === selectedState) : users;
+        setFilteredUsers(filtered);
+        setCurrentPage(1);
+    };
 
+    const removeFilter = () => {
+        setSelectedState('');
+        setFilteredUsers(users);
+        setCurrentPage(1);
+    };
 
     const handleUserClick = (id) => {
         navigate(`/users/${id}`);
     };
 
-
-
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
+
+
+
+
     const getVisiblePageNumbers = () => {
+
         const maxVisiblePages = 5;
         let startPage = Math.max(1, currentPage - 2);
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -94,7 +115,6 @@ const Users = () => {
         return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
     };
 
-
     const currentUsers = useMemo(() =>
         filteredUsers.slice(
             (currentPage - 1) * usersPerPage,
@@ -102,6 +122,7 @@ const Users = () => {
         ),
         [filteredUsers, currentPage, usersPerPage]
     );
+
 
 
 
@@ -115,38 +136,39 @@ const Users = () => {
                 accessorFn: (row) => `${row.firstName} ${row.maidenName} ${row.lastName}`,
                 header: 'Name',
                 enableSorting: true,
-
             },
             {
                 accessorKey: 'email',
                 header: 'Email',
                 enableSorting: true,
-
             },
             {
                 accessorKey: 'age',
                 header: 'Age',
                 enableSorting: true,
-
             },
             {
                 accessorKey: 'gender',
                 header: 'Gender',
             },
             {
+                accessorKey: 'address.state',
+                header: 'State',
+            },
+            {
                 header: 'Actions',
                 cell: ({ row }) => (
-
                     <Button variant="outline" onClick={() => handleUserClick(row.original.id)}>
                         View Details
                     </Button>
-
-
                 ),
             },
         ],
         []
     );
+
+
+
 
 
     const table = useReactTable({
@@ -166,7 +188,6 @@ const Users = () => {
         <div className="container mx-auto p-10 bg-slate-100">
             <h1 className="text-4xl font-bold text-center mb-6 mt-4 font-mono tracking-wide text-gray-700">Users</h1>
 
-
             <div className="flex flex-col sm:flex-row justify-center items-center mb-6 gap-5">
                 <input
                     type="text"
@@ -175,38 +196,43 @@ const Users = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="p-2 border border-gray-300 rounded-md w-full sm:w-80"
                 />
-                <Button
-                    onClick={handleSearch}
-                    className="mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto"
-                >
+                <Button onClick={handleSearch} className="mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto">
                     Search
                 </Button>
 
+
+
+
+
+
                 <Sheet>
-                    <SheetTrigger className="bg-slate-900 p-2 h-9 text-center text-white rounded-lg py-2 font-medium font-sans ">Filter</SheetTrigger>
+                    <SheetTrigger className="bg-slate-900 p-2 h-9 text-center text-white rounded-lg py-2 font-medium font-sans ">
+                        <div className='flex justify-center gap-1'>
+                            Filter <GrFilter className='h-5 w-5 pt-1' />
+                        </div>
+                    </SheetTrigger>
                     <SheetContent>
                         <SheetHeader>
                             <SheetTitle>Add Filters</SheetTitle>
                             <hr />
                             <SheetDescription>
-
-
-                                <Select >
+                                <Select onValueChange={setSelectedState} value={selectedState}>
                                     <SelectTrigger className="w-[335px] mt-5">
                                         <SelectValue placeholder="Filter by State" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem></SelectItem>
+                                        {uniqueStates.map(state => (
+                                            <SelectItem key={state} value={state}>
+                                                {state}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
 
-
-                                <Button
-
-                                    className=" sm:mt-0 sm:ml-4 w-full sm:w-auto mt-5"
-                                >
-                                    Apply Fiters
+                                <Button onClick={applyStateFilter} className=" mt-5">
+                                    Apply Filter
                                 </Button>
+
 
                             </SheetDescription>
                         </SheetHeader>
@@ -215,8 +241,11 @@ const Users = () => {
 
 
 
-            </div>
+                <Button variant="outline" onClick={removeFilter}>
+                    Remove Filter
+                </Button>
 
+            </div>
 
 
 
@@ -229,7 +258,6 @@ const Users = () => {
                 <p>Loading users...</p>
             ) : currentUsers.length > 0 ? (
                 <>
-
                     <div className="table-responsive">
                         <Table className="table-auto w-full">
                             <TableHeader>
@@ -238,7 +266,6 @@ const Users = () => {
                                         {headerGroup.headers.map(header => (
                                             <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
                                                 {flexRender(header.column.columnDef.header, header.getContext())}
-
                                                 {{
                                                     asc: <TbSortAscending />,
                                                     desc: <TbSortDescending />,
@@ -262,16 +289,12 @@ const Users = () => {
                         </Table>
                     </div>
 
-
-
-
-
                     <div className="flex justify-center mt-4">
                         <Pagination className="flex items-center space-x-2">
                             <PaginationItem
                                 disabled={currentPage === 1}
                                 onClick={() => setCurrentPage(currentPage - 1)}
-                                className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
+                                className="flex cursor-pointer items-center px-3 py-2"
                             >
                                 <FaAngleLeft />
                             </PaginationItem>
