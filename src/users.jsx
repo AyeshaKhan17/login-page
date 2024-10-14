@@ -23,7 +23,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "./components/ui/select";
-import { GrFilter } from "react-icons/gr";
+import { AiFillFilter } from "react-icons/ai";
 
 
 const Users = () => {
@@ -36,6 +36,7 @@ const Users = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [sorting, setSorting] = useState([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [filterCount, setFilterCount] = useState(0);
     const usersPerPage = 10;
     const navigate = useNavigate();
 
@@ -86,12 +87,14 @@ const Users = () => {
         setFilteredUsers(filtered);
         setCurrentPage(1);
         setIsSheetOpen(false);
+        setFilterCount(selectedState ? 1 : 0);
     };
 
     const removeFilter = () => {
         setSelectedState('');
         setFilteredUsers(users);
         setCurrentPage(1);
+        setFilterCount(0);
     };
 
     const handleUserClick = (id) => {
@@ -207,48 +210,55 @@ const Users = () => {
 
 
 
-                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                    <SheetTrigger asChild>
-                        <Button onClick={() => setIsSheetOpen(true)} className="bg-slate-900 text-white">
-                            <div className='flex justify-center gap-1'>
-                                Filter <GrFilter className='h-5 w-5 pt-1' />
-                            </div>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle>Add Filters</SheetTitle>
-                            <hr />
-                            <SheetDescription>
-                                <Select onValueChange={setSelectedState} value={selectedState}>
-                                    <SelectTrigger className="w-[335px] mt-5">
-                                        <SelectValue placeholder="Filter by State" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {uniqueStates.map(state => (
-                                            <SelectItem key={state} value={state}>
-                                                {state}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                <div className="flex gap-5">
+                    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                        <SheetTrigger asChild>
+                            <Button onClick={() => setIsSheetOpen(true)} className="bg-slate-900 text-white">
+                                <div className='flex justify-center gap-2'>
+                                    <AiFillFilter className='h-5 w-5 pt-1' />
+                                    {filterCount > 0 && (
+                                        <span className=" text-white">
+                                            ({(filterCount)})
+                                        </span>
+                                    )}
 
-                                <Button onClick={applyStateFilter} className=" mt-5">
-                                    Apply Filter
-                                </Button>
+                                </div>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Add Filters</SheetTitle>
+                                <hr />
+                                <SheetDescription>
+                                    <Select onValueChange={setSelectedState} value={selectedState}>
+                                        <SelectTrigger className="w-[335px] mt-5">
+                                            <SelectValue placeholder="Filter by State" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {uniqueStates.map(state => (
+                                                <SelectItem key={state} value={state}>
+                                                    {state}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Button onClick={applyStateFilter} className=" mt-5">
+                                        Apply Filter
+                                    </Button>
 
 
-                            </SheetDescription>
-                        </SheetHeader>
-                    </SheetContent>
-                </Sheet>
+                                </SheetDescription>
+                            </SheetHeader>
+                        </SheetContent>
+                    </Sheet>
 
 
 
-                <Button variant="outline" onClick={removeFilter}>
-                    Reset
-                </Button>
-
+                    <Button variant="outline" onClick={removeFilter}>
+                        Reset
+                    </Button>
+                </div>
             </div>
 
 
