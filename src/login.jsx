@@ -5,7 +5,7 @@ import { Button } from './components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
@@ -13,15 +13,15 @@ const LoginPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const demoApiUrl = 'https://run.mocky.io/v3/d43061f8-5c67-48e1-8ab2-68c6683bd243';
+        const url = 'https://dummyjson.com/auth/login';
 
         const requestBody = {
-            email: email,
+            username: username,
             password: password,
         };
 
         try {
-            const response = await fetch(demoApiUrl, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,21 +30,18 @@ const LoginPage = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Hey! Something went wrong');
+                throw new Error('Invalid username or password');
             }
 
-
-
             const result = await response.json();
-            setMessage(`Login successful. User: ${result.data.name}, Email: ${result.data.email}`);
+            setMessage(`Login successful. User: ${result.username}`);
 
-            navigate('/users', { state: { user: result.data } });
+            localStorage.setItem('token', result.token);
+            navigate('/users', { state: { user: result } });
         } catch (error) {
             setMessage('Login failed. Error: ' + error.message);
         }
     };
-
-
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-200">
@@ -55,15 +52,15 @@ const LoginPage = () => {
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                Username
                             </label>
                             <Input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
+                                type="text"
+                                id="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Enter your username"
                                 className="mt-1 block w-full"
                                 required
                             />

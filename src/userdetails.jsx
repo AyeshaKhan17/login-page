@@ -11,6 +11,8 @@ import {
 import { Link } from 'react-router-dom';
 import { HiMenu } from "react-icons/hi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+
 
 
 
@@ -74,7 +76,14 @@ const UserDetail = () => {
                         user ? (
                             <Card className="shadow-md w-auto">
                                 <CardHeader>
-                                    <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
+                                    <div className='flex gap-6 justify-center'>
+                                        <Avatar>
+                                            <AvatarImage src={user.image} />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </Avatar>
+                                        <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
+                                    </div>
+
                                 </CardHeader>
                                 <CardContent className="leading-loose ">
                                     <p><strong>Email: </strong> {user.email}</p>
@@ -102,8 +111,14 @@ const UserDetail = () => {
                         user ? (
                             <Card className="shadow-md w-auto">
                                 <CardHeader>
-                                    <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}
-                                    </CardTitle>
+                                    <div className='flex gap-6 justify-center'>
+                                        <Avatar>
+                                            <AvatarImage src={user.image} />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </Avatar>
+                                        <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
+                                    </div>
+
                                 </CardHeader>
                                 <CardContent className="leading-loose ">
                                     <p><strong>Card Expire: </strong> {user.bank.cardExpire}</p>
@@ -125,8 +140,13 @@ const UserDetail = () => {
                         user ? (
                             <Card className="shadow-md w-auto">
                                 <CardHeader>
-                                    <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}
-                                    </CardTitle>
+                                    <div className='flex gap-6 justify-center'>
+                                        <Avatar>
+                                            <AvatarImage src={user.image} />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </Avatar>
+                                        <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
+                                    </div>
                                 </CardHeader>
                                 <CardContent className="leading-loose ">
                                     <p><strong>Company:  </strong>{user.company.name}</p>

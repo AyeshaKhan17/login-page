@@ -35,6 +35,7 @@ const Users = () => {
     const [selectedState, setSelectedState] = useState(''); // State filter
     const [isLoading, setIsLoading] = useState(true);
     const [sorting, setSorting] = useState([]);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
     const usersPerPage = 10;
     const navigate = useNavigate();
 
@@ -84,6 +85,7 @@ const Users = () => {
         const filtered = selectedState ? users.filter(user => user.address.state === selectedState) : users;
         setFilteredUsers(filtered);
         setCurrentPage(1);
+        setIsSheetOpen(false);
     };
 
     const removeFilter = () => {
@@ -205,11 +207,13 @@ const Users = () => {
 
 
 
-                <Sheet>
-                    <SheetTrigger className="bg-slate-900 p-2 h-9 text-center text-white rounded-lg py-2 font-medium font-sans ">
-                        <div className='flex justify-center gap-1'>
-                            Filter <GrFilter className='h-5 w-5 pt-1' />
-                        </div>
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <SheetTrigger asChild>
+                        <Button onClick={() => setIsSheetOpen(true)} className="bg-slate-900 text-white">
+                            <div className='flex justify-center gap-1'>
+                                Filter <GrFilter className='h-5 w-5 pt-1' />
+                            </div>
+                        </Button>
                     </SheetTrigger>
                     <SheetContent>
                         <SheetHeader>
@@ -242,7 +246,7 @@ const Users = () => {
 
 
                 <Button variant="outline" onClick={removeFilter}>
-                    Remove Filter
+                    Reset
                 </Button>
 
             </div>
