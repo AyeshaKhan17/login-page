@@ -32,7 +32,7 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedState, setSelectedState] = useState(''); // State filter
+    const [selectedState, setSelectedState] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [sorting, setSorting] = useState([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
