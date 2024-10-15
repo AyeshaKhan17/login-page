@@ -347,9 +347,15 @@ const Users = () => {
                                                     <AvatarFallback>image</AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800'>Age: </span>{users.age}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800'>Gender: </span>{users.gender}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800'>Phone: </span>{users.phone}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4  '>Email: </span>{users.email}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Age: </span>{users.age}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Gender: </span>{users.gender}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Phone: </span>{users.phone}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Address: </span>{users.address.address}, {users.address.city}, {users.address.state}, {users.address.country}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>State: </span>{users.address.state}, {users.address.stateCode}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Postal Code: </span>{users.address.postalCode}</p>
+                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>University: </span>{users.university}</p>
+
                                                 </div>
                                             </div>
                                         </HoverCardContent>
@@ -404,12 +410,6 @@ const Users = () => {
                         </div>
 
                     )}
-
-
-
-
-
-
 
 
 
