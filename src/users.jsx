@@ -1,13 +1,13 @@
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './components/ui/button';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Pagination, PaginationItem } from './components/ui/pagination';
-import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/ui/table';
-import { TbSortAscending } from "react-icons/tb";
-import { TbSortDescending } from "react-icons/tb";
+//import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel } from '@tanstack/react-table';
+//import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/ui/table';
+//import { TbSortAscending } from "react-icons/tb";
+//import { TbSortDescending } from "react-icons/tb";
 import {
     Sheet,
     SheetContent,
@@ -24,6 +24,20 @@ import {
     SelectValue,
 } from "./components/ui/select";
 import { AiFillFilter } from "react-icons/ai";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "./components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+
+    DropdownMenuTrigger,
+} from "./components/ui/dropdown-menu";
+
 
 
 const Users = () => {
@@ -37,8 +51,9 @@ const Users = () => {
     const [sorting, setSorting] = useState([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [filterCount, setFilterCount] = useState(0);
-    const usersPerPage = 10;
+    const usersPerPage = 12;
     const navigate = useNavigate();
+    const debounceTimeout = useRef(null);
 
 
     useEffect(() => {
@@ -69,17 +84,35 @@ const Users = () => {
     }, [users]);
 
 
-    const handleSearch = () => {
-        if (!searchTerm.trim()) {
+
+
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+        }
+
+        debounceTimeout.current = setTimeout(() => {
+            handleSearch(value);
+        }, 1000);
+    };
+
+    const handleSearch = (value) => {
+        if (!value.trim()) {
             setFilteredUsers(users);
             return;
         }
         const searchResults = users.filter((user) =>
-            (`${user.firstName} ${user.maidenName} ${user.lastName}`).toLowerCase().includes(searchTerm.toLowerCase())
+            (`${user.firstName} ${user.maidenName} ${user.lastName}`).toLowerCase().includes(value.toLowerCase())
         );
         setFilteredUsers(searchResults);
         setCurrentPage(1);
     };
+
+
 
 
     const applyStateFilter = () => {
@@ -131,60 +164,60 @@ const Users = () => {
 
 
 
-    const columns = useMemo(
-        () => [
-            {
-                accessorKey: 'id',
-                header: 'ID',
-            },
-            {
-                accessorFn: (row) => `${row.firstName} ${row.maidenName} ${row.lastName}`,
-                header: 'Name',
-                enableSorting: true,
-            },
-            {
-                accessorKey: 'email',
-                header: 'Email',
-                enableSorting: true,
-            },
-            {
-                accessorKey: 'age',
-                header: 'Age',
-                enableSorting: true,
-            },
-            {
-                accessorKey: 'gender',
-                header: 'Gender',
-            },
-            {
-                accessorKey: 'address.state',
-                header: 'State',
-            },
-            {
-                header: 'Actions',
-                cell: ({ row }) => (
-                    <Button variant="outline" onClick={() => handleUserClick(row.original.id)}>
-                        View Details
-                    </Button>
-                ),
-            },
-        ],
-        []
-    );
+    /*  const columns = useMemo(
+          () => [
+              {
+                  accessorKey: 'id',
+                  header: 'ID',
+              },
+              {
+                  accessorFn: (row) => `${row.firstName} ${row.maidenName} ${row.lastName}`,
+                  header: 'Name',
+                  enableSorting: true,
+              },
+              {
+                  accessorKey: 'email',
+                  header: 'Email',
+                  enableSorting: true,
+              },
+              {
+                  accessorKey: 'age',
+                  header: 'Age',
+                  enableSorting: true,
+              },
+              {
+                  accessorKey: 'gender',
+                  header: 'Gender',
+              },
+              {
+                  accessorKey: 'address.state',
+                  header: 'State',
+              },
+              {
+                  header: 'Actions',
+                  cell: ({ row }) => (
+                      <Button variant="outline" onClick={() => handleUserClick(row.original.id)}>
+                          View Details
+                      </Button>
+                  ),
+              },
+          ],
+          []
+      );
+  
+  */
 
 
 
-
-
-    const table = useReactTable({
-        data: currentUsers,
-        columns,
-        state: { sorting },
-        onSortingChange: setSorting,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-    });
-
+    /*  const table = useReactTable({
+           data: currentUsers,
+           columns,
+           state: { sorting },
+           onSortingChange: setSorting,
+           getCoreRowModel: getCoreRowModel(),
+           getSortedRowModel: getSortedRowModel(),
+       });
+       */
 
 
 
@@ -198,12 +231,9 @@ const Users = () => {
                     type="text"
                     placeholder="Search users by name..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearchChange}
                     className="p-2 border border-gray-300 rounded-md w-full sm:w-80"
                 />
-                <Button onClick={handleSearch} className="mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto">
-                    Search
-                </Button>
 
 
 
@@ -272,36 +302,70 @@ const Users = () => {
                 <p>Loading users...</p>
             ) : currentUsers.length > 0 ? (
                 <>
-                    <div className="table-responsive">
-                        <Table className="table-auto w-full">
-                            <TableHeader>
-                                {table.getHeaderGroups().map(headerGroup => (
-                                    <TableRow key={headerGroup.id}>
-                                        {headerGroup.headers.map(header => (
-                                            <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                                {{
-                                                    asc: <TbSortAscending />,
-                                                    desc: <TbSortDescending />,
-                                                }[header.column.getIsSorted()] ?? null}
-                                            </TableHead>
-                                        ))}
-                                    </TableRow>
-                                ))}
-                            </TableHeader>
-                            <TableBody>
-                                {table.getRowModel().rows.map(row => (
-                                    <TableRow key={row.id}>
-                                        {row.getVisibleCells().map(cell => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+                    <div className='grid grid-cols-3 gap-6  '>
+                        {currentUsers.map(users => (
+                            <div key={users.id} className='p-4 bg-white shaddow rounded-lg hover:shadow-lg transition'>
+
+
+
+
+
+
+                                <HoverCard>
+                                    <HoverCardTrigger>
+
+                                        <h3 className="text-lg font-semibold mb-1 cursor-pointer">
+                                            {`${users.firstName} ${users.maidenName} 
+                                    ${users.lastName}`}
+                                        </h3>
+
+                                    </HoverCardTrigger>
+                                    <HoverCardContent>
+
+                                        <div className='flex gap-2'>
+                                            <Avatar>
+                                                <AvatarImage src={users.image} />
+                                                <AvatarFallback>image</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <p className='text-sm text-gray-600 '><span className='text-gray-800'>Age: </span>{users.age}</p>
+                                                <p className='text-sm text-gray-600 '><span className='text-gray-800'>Gender: </span>{users.gender}</p>
+                                                <p className='text-sm text-gray-600 '><span className='text-gray-800'>Phone: </span>{users.phone}</p>
+                                            </div>
+                                        </div>
+                                    </HoverCardContent>
+                                </HoverCard>
+
+
+
+                                <p className='text-sm text-gray-600'>{users.email}</p>
+
+                                <p className="text-sm text-gray-600"><span className='text-gray-700'>State: </span>{users.address.state}</p>
+                                <Button variant="outline" onClick={() =>
+                                    handleUserClick(users.id)}
+                                    className="mt-3"
+                                > View Details</Button>
+
+
+                            </div>
+
+                        ))}
+
+
+
+
+                    </div >
+
+
+
+
+
+
+
+
+
+
+
 
                     <div className="flex justify-center mt-4">
                         <Pagination className="flex items-center space-x-2">
@@ -337,7 +401,7 @@ const Users = () => {
             ) : (
                 <p>No users found.</p>
             )}
-        </div>
+        </div >
     );
 };
 

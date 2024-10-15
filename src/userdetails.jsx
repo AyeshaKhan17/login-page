@@ -79,7 +79,7 @@ const UserDetail = () => {
                                     <div className='flex gap-6 justify-center'>
                                         <Avatar>
                                             <AvatarImage src={user.image} />
-                                            <AvatarFallback>CN</AvatarFallback>
+                                            <AvatarFallback>image</AvatarFallback>
                                         </Avatar>
                                         <CardTitle className="font-mono tracking-wide text-gray-700 text-2xl text-center ">{user.firstName} {user.maidenName} {user.lastName}</CardTitle>
                                     </div>
