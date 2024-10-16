@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoginPage from './login';
 import Users from './users';
 import UserDetail from './userdetails';
+import 'antd/dist/reset.css';
 
 function App() {
   return (
