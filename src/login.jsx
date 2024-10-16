@@ -5,11 +5,13 @@ import { Button } from 'antd';
 import { Card } from 'antd';
 import { Form } from 'antd';
 import { Typography } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
 const LoginPage = () => {
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (values) => {
@@ -21,6 +23,11 @@ const LoginPage = () => {
             password: password,
         };
 
+
+        setLoading(true);
+        setTimeout(() => setLoading(false), 1000);
+
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -29,6 +36,8 @@ const LoginPage = () => {
                 },
                 body: JSON.stringify(requestBody),
             });
+
+
 
             if (!response.ok) {
                 throw new Error('Invalid username or password');
@@ -59,23 +68,24 @@ const LoginPage = () => {
 
                     <Form.Item label="Username"
                         name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}>
+                        rules={[{ required: true, message: 'Please enter your username!' }]}>
 
-                        <Input placeholder="Enter your username" />
+                        <Input placeholder="Enter your username"
+                            prefix=<UserOutlined /> />
                     </Form.Item>
 
 
                     <Form.Item
                         label="Password"
                         name="password"
-                        rules={[{ required: true, message: 'Please input your password!' }]}>
+                        rules={[{ required: true, message: 'Please enter your password!' }]}>
 
                         <Input.Password placeholder="Enter your password" />
                     </Form.Item>
 
 
 
-                    <Button type="primary" htmlType="submit" block>
+                    <Button type="primary" htmlType="submit" block loading={loading}>
                         Login
                     </Button>
                 </Form>
