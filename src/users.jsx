@@ -1,35 +1,14 @@
 
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from './components/ui/button';
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import { Pagination, PaginationItem } from './components/ui/pagination';
-import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/ui/table';
-import { TbSortAscending } from "react-icons/tb";
-import { TbSortDescending } from "react-icons/tb";
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "./components/ui/sheet";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "./components/ui/select";
+import { Button } from 'antd';
+import { Pagination } from 'antd';
+import { Table } from 'antd';
+import { Select } from "antd";
 import { AiFillFilter } from "react-icons/ai";
-import {
-    HoverCard,
-    HoverCardContent,
-    HoverCardTrigger,
-} from "./components/ui/hover-card";
-import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import { Avatar } from "antd";
+import { Drawer } from "antd";
+import { Popover } from "antd";
 
 
 
@@ -42,8 +21,8 @@ const Users = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedState, setSelectedState] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [sorting, setSorting] = useState([]);
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    //const [sorting, setSorting] = useState([]);        no use
+    const [drawerVisible, setDrawerVisible] = useState(false);
     const [filterCount, setFilterCount] = useState(0);
     const usersPerPage = 12;
     const navigate = useNavigate();
@@ -96,7 +75,7 @@ const Users = () => {
 
         debounceTimeout.current = setTimeout(() => {
             handleSearch(value);
-        }, 1000);
+        }, 600);
     };
 
     const handleSearch = (value) => {
@@ -118,7 +97,7 @@ const Users = () => {
         const filtered = selectedState ? users.filter(user => user.address.state === selectedState) : users;
         setFilteredUsers(filtered);
         setCurrentPage(1);
-        setIsSheetOpen(false);
+        setDrawerVisible(false);
         setFilterCount(selectedState ? 1 : 0);
     };
 
@@ -139,7 +118,7 @@ const Users = () => {
 
 
 
-    const getVisiblePageNumbers = () => {
+    const getVisiblePageNumbers = () => {         //not included
 
         const maxVisiblePages = 5;
         let startPage = Math.max(1, currentPage - 2);
@@ -166,59 +145,67 @@ const Users = () => {
 
 
 
-    const columns = useMemo(
-        () => [
-            {
-                accessorKey: 'id',
-                header: 'ID',
-            },
-            {
-                accessorFn: (row) => `${row.firstName} ${row.maidenName} ${row.lastName}`,
-                header: 'Name',
-                enableSorting: true,
-            },
-            {
-                accessorKey: 'email',
-                header: 'Email',
-                enableSorting: true,
-            },
-            {
-                accessorKey: 'age',
-                header: 'Age',
-                enableSorting: true,
-            },
-            {
-                accessorKey: 'gender',
-                header: 'Gender',
-            },
-            {
-                accessorKey: 'address.state',
-                header: 'State',
-            },
-            {
-                header: 'Actions',
-                cell: ({ row }) => (
-                    <Button variant="outline" onClick={() => handleUserClick(row.original.id)}>
-                        View Details
-                    </Button>
-                ),
-            },
-        ],
-        []
-    );
+    const columns = [
+
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id'
+        },
+
+        {
+            title: 'Name',
+            key: 'name',
+            sorter: true,
+            render: (_, record) => `${record.firstName} ${record.maidenName} ${record.lastName}`
+        },
+
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+            sorter: true
+        },
+
+        {
+            title: 'Age',
+            dataIndex: 'age',
+            key: 'age',
+            sorter: true
+        },
+
+        {
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender'
+        },
+
+        {
+            title: 'State',
+            dataIndex: ['address', 'state'],
+            key: 'state'
+        },
+
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+                <Button onClick={() => handleUserClick(record.id)}>View Details</Button>
+            )
+        }
+    ];
 
 
 
 
-
-    const table = useReactTable({
-        data: currentUsers,
-        columns,
-        state: { sorting },
-        onSortingChange: setSorting,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-    });
+    /* const table = useReactTable({
+         data: currentUsers,
+         columns,
+         state: { sorting },
+         onSortingChange: setSorting,
+         getCoreRowModel: getCoreRowModel(),
+         getSortedRowModel: getSortedRowModel(),
+     });*/
 
 
 
@@ -237,80 +224,68 @@ const Users = () => {
                     className="p-2 border border-gray-300 rounded-md w-full sm:w-80"
                 />
 
+                <Button onClick={() =>
+                    setDrawerVisible(true)}
+                    className="bg-slate-900 text-white">
+
+                    <AiFillFilter className="mr-2" />
+                    {filterCount > 0 && `(${filterCount})`}
+
+                </Button>
 
 
 
 
 
-                <div className="flex gap-5">
-                    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                        <SheetTrigger asChild>
-                            <Button onClick={() => setIsSheetOpen(true)} className="bg-slate-900 text-white">
-                                <div className='flex justify-center gap-2'>
-                                    <AiFillFilter className='h-5 w-5 pt-1' />
-                                    {filterCount > 0 && (
-                                        <span className=" text-white">
-                                            ({(filterCount)})
-                                        </span>
-                                    )}
-
-                                </div>
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent>
-                            <SheetHeader>
-                                <SheetTitle>Add Filters</SheetTitle>
-                                <hr />
-                                <SheetDescription>
-                                    <Select onValueChange={setSelectedState} value={selectedState}>
-                                        <SelectTrigger className="w-[335px] mt-5">
-                                            <SelectValue placeholder="Filter by State" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {uniqueStates.map(state => (
-                                                <SelectItem key={state} value={state}>
-                                                    {state}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-
-                                    <Button onClick={applyStateFilter} className=" mt-5">
-                                        Apply Filter
-                                    </Button>
-
-
-                                </SheetDescription>
-                            </SheetHeader>
-                        </SheetContent>
-                    </Sheet>
-
-
-                    <Button variant="outline" onClick={removeFilter}>
-                        Reset
+                <Drawer
+                    title="Filter by State"
+                    placement="right"
+                    onClose={() => setDrawerVisible(false)}
+                    open={drawerVisible}
+                >
+                    <Select
+                        className="w-full"
+                        placeholder="Select a state"
+                        value={selectedState}
+                        onChange={setSelectedState}
+                        options={uniqueStates.map((state) => ({
+                            label: state,
+                            value: state,
+                        }))}
+                    />
+                    <Button type="primary" onClick={applyStateFilter} className="mt-4">
+                        Apply Filter
                     </Button>
+                </Drawer>
 
-                </div>
 
+                <Button onClick={removeFilter}>
 
-                <div className=" flex justify-end  sm:flex-row ">
+                    Reset
 
-                    <Select onValueChange={handleViewChange} value={viewType}>
-                        <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Select View" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="grid">Grid View</SelectItem>
-                            <SelectItem value="table">Table View</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
+                </Button>
 
             </div>
 
 
-
+            <div className="flex justify-end mb-4">
+                <Select
+                    value={viewType}
+                    defaultValue="grid"
+                    className="w-60"
+                    onChange={handleViewChange}
+                    options={[
+                        {
+                            value: 'grid',
+                            label: 'Grid View',
+                        },
+                        {
+                            value: 'table',
+                            label: 'Table View',
+                        }
+                    ]}
+                />
+            </div>
 
 
 
@@ -318,139 +293,60 @@ const Users = () => {
 
             {isLoading ? (
                 <p>Loading users...</p>
-            ) : currentUsers.length > 0 ? (
-                <>
-                    {viewType === 'grid' ? (
-                        <div className='grid grid-cols-3 gap-6  '>
-                            {currentUsers.map(users => (
-                                <div key={users.id} className='p-4 bg-white shaddow rounded-lg hover:shadow-lg transition'>
+            ) : viewType === 'grid' ? (
+                <div className="grid grid-cols-3 gap-6">
+                    {currentUsers.map((user) => (
+                        <div key={user.id} className="p-4 bg-white shadow rounded-lg">
 
+                            <Popover
+                                content={
 
+                                    <div className='flex gap-2'>
+                                        <Avatar src={user.image} />
+                                        <div>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4  '>Email: </span>{user.email}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Age: </span>{user.age}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Gender: </span>{user.gender}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Phone: </span>{user.phone}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Address: </span>{user.address.address}, {user.address.city}, {user.address.state}, {user.address.country}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>State: </span>{user.address.state}, {user.address.stateCode}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Postal Code: </span>{user.address.postalCode}</p>
+                                            <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>University: </span>{user.university}</p>
 
+                                        </div>
+                                    </div>
 
+                                }
+                                title="Details"
+                                trigger="hover"
+                            >
+                                <h3>{`${user.firstName} ${user.maidenName} ${user.lastName}`}</h3>
+                            </Popover>
 
-
-                                    <HoverCard>
-                                        <HoverCardTrigger>
-
-                                            <h3 className="text-lg font-semibold mb-1 cursor-pointer">
-                                                {`${users.firstName} ${users.maidenName} 
-                                    ${users.lastName}`}
-                                            </h3>
-
-                                        </HoverCardTrigger>
-                                        <HoverCardContent>
-
-                                            <div className='flex gap-2'>
-                                                <Avatar>
-                                                    <AvatarImage src={users.image} />
-                                                    <AvatarFallback>image</AvatarFallback>
-                                                </Avatar>
-                                                <div>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4  '>Email: </span>{users.email}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Age: </span>{users.age}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Gender: </span>{users.gender}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Phone: </span>{users.phone}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Address: </span>{users.address.address}, {users.address.city}, {users.address.state}, {users.address.country}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>State: </span>{users.address.state}, {users.address.stateCode}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>Postal Code: </span>{users.address.postalCode}</p>
-                                                    <p className='text-sm text-gray-600 '><span className='text-gray-800 font-medium leading-4'>University: </span>{users.university}</p>
-
-                                                </div>
-                                            </div>
-                                        </HoverCardContent>
-                                    </HoverCard>
-
-
-
-                                    <p className='text-sm text-gray-600'>{users.email}</p>
-
-                                    <p className="text-sm text-gray-600"><span className='text-gray-700'>State: </span>{users.address.state}</p>
-                                    <Button variant="outline" onClick={() =>
-                                        handleUserClick(users.id)}
-                                        className="mt-3"
-                                    > View Details</Button>
-
-
-                                </div>
-
-                            ))}
-
-                        </div >) : (
-
-                        <div className="table-responsive">
-                            <Table className="table-auto w-full">
-                                <TableHeader>
-                                    {table.getHeaderGroups().map(headerGroup => (
-                                        <TableRow key={headerGroup.id}>
-                                            {headerGroup.headers.map(header => (
-                                                <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
-                                                    {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    {{
-                                                        asc: <TbSortAscending />,
-                                                        desc: <TbSortDescending />,
-                                                    }[header.column.getIsSorted()] ?? null}
-                                                </TableHead>
-                                            ))}
-                                        </TableRow>
-                                    ))}
-                                </TableHeader>
-                                <TableBody>
-                                    {table.getRowModel().rows.map(row => (
-                                        <TableRow key={row.id}>
-                                            {row.getVisibleCells().map(cell => (
-                                                <TableCell key={cell.id}>
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                            <p>{user.email}</p>
+                            <Button onClick={() => handleUserClick(user.id)}>View Details</Button>
                         </div>
-
-                    )}
-
-
-
-
-
-
-                    < div className="flex justify-center mt-4">
-                        <Pagination className="flex items-center space-x-2">
-                            <PaginationItem
-                                disabled={currentPage === 1}
-                                onClick={() => setCurrentPage(currentPage - 1)}
-                                className="flex cursor-pointer items-center px-3 py-2"
-                            >
-                                <FaAngleLeft />
-                            </PaginationItem>
-
-                            {getVisiblePageNumbers().map((pageNumber) => (
-                                <PaginationItem
-                                    key={pageNumber}
-                                    active={currentPage === pageNumber}
-                                    onClick={() => setCurrentPage(pageNumber)}
-                                    className={`flex cursor-pointer items-center px-3 py-2 ${currentPage === pageNumber ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
-                                >
-                                    {pageNumber}
-                                </PaginationItem>
-                            ))}
-
-                            <PaginationItem
-                                disabled={currentPage === totalPages}
-                                onClick={() => setCurrentPage(currentPage + 1)}
-                                className="flex cursor-pointer items-center px-3 py-2"
-                            >
-                                <FaAngleRight />
-                            </PaginationItem>
-                        </Pagination>
-                    </div>
-                </>
+                    ))}
+                </div>
             ) : (
-                <p>No users found.</p>
-            )
-            }
+                <Table columns={columns} dataSource={currentUsers} pagination={true} />
+            )}
+
+
+
+
+
+            <div className="flex justify-center mt-4">
+                <Pagination
+                    current={currentPage}
+                    total={filteredUsers.length}
+                    pageSize={usersPerPage}
+                    onChange={(page) => setCurrentPage(page)}
+                    showSizeChanger={false}
+                />
+            </div>
+
+
         </div >
     );
 };
