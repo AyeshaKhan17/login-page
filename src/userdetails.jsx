@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, Avatar, Dropdown, Menu, Tabs } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import MenuItem from 'antd/es/menu/MenuItem';
+import { MenuItem } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import { MenuOutlined } from '@ant-design/icons';
 
